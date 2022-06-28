@@ -1,10 +1,16 @@
 import 'package:bank_statements/injector.dart';
 import 'package:bank_statements/src/data/model/bank_account.dart';
-import 'package:bank_statements/src/domain/usecase/account_usecase.dart';
+import 'package:bank_statements/src/domain/usecase/create_account_usecase.dart';
+import 'package:bank_statements/src/domain/usecase/fetch_acount_usecase.dart';
 import 'package:get/get.dart';
 
-class AddCardController extends GetxController {
-  final accountUseCase = injection.get<AccountUseCase>();
+class CardController extends GetxController {
+  final accountUseCase = injection.get<CreateAccountUseCase>();
+  final fetchCards = injection.get<FetchAccountUseCase>();
+
+  final List<AccountModels> _cardList = [];
+
+  List<AccountModels> get cardList => _cardList;
 
   addCard({
     required String cardNumber,
@@ -25,5 +31,19 @@ class AddCardController extends GetxController {
       ),
     );
     print(response);
+  }
+
+  getAllCard() async {
+    final value = await fetchCards.fetchAccountUseCase();
+    for (var element in value) {
+      _cardList.add(element);
+    }
+    update();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    getAllCard();
   }
 }

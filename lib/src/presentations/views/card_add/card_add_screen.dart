@@ -5,6 +5,9 @@ import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
+import '../../components/banck_textfields.dart';
+import '../../components/register_button.dart';
+
 class CardAddScreen extends StatefulWidget {
   const CardAddScreen({Key? key}) : super(key: key);
 
@@ -26,7 +29,6 @@ class _CardAddScreenState extends State<CardAddScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    Get.lazyPut(() => AddCardController());
     return SafeArea(
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -64,6 +66,7 @@ class _CardAddScreenState extends State<CardAddScreen> {
                                 theme: theme,
                                 hintText: 'شماره کارت',
                                 inputFormatter: [_cardMask],
+                                textInputType: TextInputType.number,
                                 onChange: (value) {
                                   _cardNumber =
                                       value.charRagham(separator: " ").trim();
@@ -73,6 +76,7 @@ class _CardAddScreenState extends State<CardAddScreen> {
                               BankTextField(
                                 theme: theme,
                                 hintText: 'شماره حساب',
+                                textInputType: TextInputType.number,
                                 onChange: (value) {
                                   _accountNumber = value.trim();
                                 },
@@ -80,6 +84,7 @@ class _CardAddScreenState extends State<CardAddScreen> {
                               BankTextField(
                                 theme: theme,
                                 hintText: 'شماره شبا',
+                                textInputType: TextInputType.number,
                                 onChange: (value) {
                                   _iban = value.trim();
                                 },
@@ -88,6 +93,7 @@ class _CardAddScreenState extends State<CardAddScreen> {
                                 theme: theme,
                                 controller: _balancController,
                                 hintText: 'موجودی فعلی',
+                                textInputType: TextInputType.number,
                                 onChange: (value) {
                                   _balancController.text =
                                       value.seRagham().trim();
@@ -105,7 +111,9 @@ class _CardAddScreenState extends State<CardAddScreen> {
                                   Expanded(
                                     child: BankTextField(
                                       theme: theme,
+                                      textAlign: TextAlign.center,
                                       hintText: '1401/03/29',
+                                      textInputType: TextInputType.number,
                                       onChange: (value) {
                                         _date = value.trim();
                                       },
@@ -115,7 +123,9 @@ class _CardAddScreenState extends State<CardAddScreen> {
                                   Expanded(
                                     child: BankTextField(
                                       theme: theme,
+                                      textAlign: TextAlign.center,
                                       hintText: 'CVV2',
+                                      textInputType: TextInputType.number,
                                       onChange: (value) {
                                         _cvv2 = value.trim();
                                       },
@@ -189,9 +199,9 @@ class _CardAddScreenState extends State<CardAddScreen> {
             ),
           ),
           floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
-              ? GestureDetector(
-                  onTap: () {
-                    Get.find<AddCardController>().addCard(
+              ? RegisterButton(
+                  onPress: () {
+                    Get.find<CardController>().addCard(
                       cardNumber: _cardNumber!,
                       accountNumber: _accountNumber!,
                       iban: _iban!,
@@ -200,81 +210,12 @@ class _CardAddScreenState extends State<CardAddScreen> {
                       date: _date!,
                     );
                   },
-                  child: Container(
-                    height: 50,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    margin:
-                        const EdgeInsets.only(left: 24, right: 24, bottom: 12),
-                    decoration: BoxDecoration(
-                      color: theme.primaryColor,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      'ثبت',
-                      style: theme.textTheme.subtitle1!.copyWith(fontSize: 26),
-                    ),
-                  ),
+                  lable: 'ثبت',
+                  theme: theme,
                 )
               : null,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-        ),
-      ),
-    );
-  }
-}
-
-class BankTextField extends StatelessWidget {
-  final ThemeData theme;
-  final String hintText;
-  final Function(String) onChange;
-  final TextEditingController? controller;
-  final List<TextInputFormatter>? inputFormatter;
-  final TextInputType? textInputType;
-  const BankTextField({
-    Key? key,
-    required this.theme,
-    required this.hintText,
-    required this.onChange,
-    this.controller,
-    this.inputFormatter,
-    this.textInputType,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 22),
-      child: SizedBox(
-        height: 50,
-        width: double.infinity,
-        child: Center(
-          child: TextField(
-            controller: controller,
-            onChanged: onChange,
-            style: theme.textTheme.bodyText1,
-            inputFormatters: inputFormatter,
-            textDirection: TextDirection.ltr,
-            keyboardType: textInputType ?? TextInputType.number,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle:
-                  theme.textTheme.bodyText2!.copyWith(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: theme.primaryColor),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: theme.primaryColor),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: theme.primaryColor),
-              ),
-            ),
-          ),
         ),
       ),
     );

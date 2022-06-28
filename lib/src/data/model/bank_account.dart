@@ -16,7 +16,7 @@ class AccountModels {
       this.cardDate,
       this.balance});
 
-  factory AccountModels.toMap(Map<String, dynamic> data) {
+  factory AccountModels.fromMap(Map<String, dynamic> data) {
     return AccountModels(
       id: data['id'],
       accountNumber: data['accountNumber'],

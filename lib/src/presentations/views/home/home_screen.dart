@@ -1,5 +1,9 @@
 import 'package:bank_statements/src/config/app_routing.dart';
+import 'package:bank_statements/src/data/model/bank_account.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../logic/ad_card_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => CardController());
     final theme = Theme.of(context);
     return SafeArea(
       child: Directionality(
@@ -42,47 +47,58 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 200,
                     child: Align(
                       alignment: Alignment.topCenter,
-                      child: PageView.builder(
-                        controller: pageController,
-                        reverse: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 1 + 1,
-                        onPageChanged: (index) {},
-                        itemBuilder: (context, index) {
-                          return index < 1
-                              ? HomeCardSliderItem(theme: theme)
-                              : Center(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      AppRoute.appRoute.navigateTo(context, '/cardadd');
-                                    },
-                                    child: Container(
-                                      width: 350,
-                                      height: 200,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 24),
-                                      decoration: BoxDecoration(
-                                        color: theme.colorScheme.secondary,
-                                        borderRadius: BorderRadius.circular(32),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.add,
-                                            color: theme.primaryColor,
-                                            size: 100,
+                      child: GetBuilder<CardController>(
+                        builder: (cardController) {
+                          return PageView.builder(
+                            controller: pageController,
+                            reverse: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: cardController.cardList.length + 1,
+                            onPageChanged: (index) {},
+                            itemBuilder: (context, index) {
+                              return index < cardController.cardList.length
+                                  ? HomeCardSliderItem(
+                                      theme: theme,
+                                      cardList: cardController.cardList,
+                                      index: index,
+                                    )
+                                  : Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          AppRoute.appRoute
+                                              .navigateTo(context, '/cardadd');
+                                        },
+                                        child: Container(
+                                          width: 350,
+                                          height: 200,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 24),
+                                          decoration: BoxDecoration(
+                                            color: theme.colorScheme.secondary,
+                                            borderRadius:
+                                                BorderRadius.circular(32),
                                           ),
-                                          Text(
-                                            'اضافه کردن کارت',
-                                            style: theme.textTheme.headline6,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                color: theme.primaryColor,
+                                                size: 100,
+                                              ),
+                                              Text(
+                                                'اضافه کردن کارت',
+                                                style:
+                                                    theme.textTheme.headline6,
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                );
+                                    );
+                            },
+                          );
                         },
                       ),
                     ),
@@ -236,9 +252,13 @@ class HomeBottomSheet extends StatelessWidget {
 
 class HomeCardSliderItem extends StatelessWidget {
   final ThemeData theme;
+  final List<AccountModels> cardList;
+  final int index;
   const HomeCardSliderItem({
     Key? key,
     required this.theme,
+    required this.cardList,
+    required this.index,
   }) : super(key: key);
 
   @override
@@ -260,7 +280,7 @@ class HomeCardSliderItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '15,500,000',
+                cardList[index].balance ?? '',
                 style: theme.textTheme.subtitle1!.copyWith(letterSpacing: 1.2),
               ),
               const SizedBox(height: 60),
@@ -270,7 +290,7 @@ class HomeCardSliderItem extends StatelessWidget {
                   Icon(Icons.copy, color: theme.primaryColor, size: 18),
                   const SizedBox(width: 10),
                   Text(
-                    '6037 9919 2194 4646',
+                    cardList[index].cardNumber ?? '',
                     style: theme.textTheme.subtitle2,
                     textDirection: TextDirection.ltr,
                   ),
@@ -281,12 +301,12 @@ class HomeCardSliderItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '375',
+                    cardList[index].cvv2 ?? '',
                     style: theme.textTheme.bodyText2,
                     textDirection: TextDirection.ltr,
                   ),
                   Text(
-                    '01/03',
+                    cardList[index].cardDate ?? '',
                     style: theme.textTheme.bodyText2,
                     textDirection: TextDirection.ltr,
                   ),

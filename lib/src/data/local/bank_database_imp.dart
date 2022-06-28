@@ -38,4 +38,10 @@ class BankAccountDatabaseImp implements BankDatabase {
     final db = await database;
     return await db.insert('account', data);
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> getAllData() async {
+    final db = await database;
+    return await db.query('account');
+  }
 }
