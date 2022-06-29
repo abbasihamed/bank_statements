@@ -1,8 +1,9 @@
-import 'package:bank_statements/injector.dart';
 import 'package:flutter/material.dart';
 
+import 'injector.dart';
 import 'src/config/app_routing.dart';
 import 'src/config/app_theme.dart';
+import 'src/core/app_keys.dart';
 
 void main() {
   AppRoute.defineRoute();
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'مدیریت حساب بانکی',
+      navigatorKey: navKey,
       theme: AppTheme.appTheme,
       onGenerateRoute: AppRoute.appRoute.generator,
       initialRoute: '/',

@@ -12,6 +12,9 @@ class BankTextField extends StatelessWidget {
   final EdgeInsets? padding;
   final int? maxLine;
   final TextDirection? textDirection;
+  final String? suffixText;
+  final FocusNode? focusNode;
+  final String? Function(String?)? validator;
   const BankTextField({
     Key? key,
     required this.theme,
@@ -22,8 +25,11 @@ class BankTextField extends StatelessWidget {
     this.textInputType = TextInputType.text,
     this.padding = const EdgeInsets.only(top: 22),
     this.textAlign = TextAlign.start,
-    this.maxLine,
+    this.suffixText,
+    this.maxLine = 1,
     this.textDirection = TextDirection.ltr,
+    this.focusNode,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -34,19 +40,26 @@ class BankTextField extends StatelessWidget {
         height: maxLine != null ? null : 50,
         width: double.infinity,
         child: Center(
-          child: TextField(
+          child: TextFormField(
+            validator: validator,
+            
             controller: controller,
             onChanged: onChange,
+            focusNode: focusNode,
             textAlign: textAlign!,
             maxLines: maxLine,
             style: theme.textTheme.bodyText1,
             inputFormatters: inputFormatter,
             textDirection: textDirection,
             keyboardType: textInputType,
+            cursorColor: Colors.white,
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle:
                   theme.textTheme.bodyText2!.copyWith(color: Colors.grey),
+              suffixText: suffixText,
+              suffixStyle: theme.textTheme.bodyText2,
+              errorStyle: theme.textTheme.overline!.copyWith(color: theme.errorColor),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: theme.primaryColor),

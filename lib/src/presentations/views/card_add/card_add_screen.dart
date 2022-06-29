@@ -1,3 +1,4 @@
+import 'package:bank_statements/src/config/app_routing.dart';
 import 'package:bank_statements/src/presentations/logic/ad_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,8 +6,11 @@ import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
+import '../../../core/app_keys.dart';
 import '../../components/banck_textfields.dart';
 import '../../components/register_button.dart';
+import '../../logic/validators.dart';
+import 'widgets/top_card.dart';
 
 class CardAddScreen extends StatefulWidget {
   const CardAddScreen({Key? key}) : super(key: key);
@@ -25,6 +29,9 @@ class _CardAddScreenState extends State<CardAddScreen> {
   String? _cvv2;
   String? _accountNumber;
   String? _iban;
+  final FocusNode _accountNumberFocus = FocusNode();
+  final FocusNode _balanceFocus = FocusNode();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -60,139 +67,138 @@ class _CardAddScreenState extends State<CardAddScreen> {
                                 : 0),
                         height: size.height * 0.5,
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              BankTextField(
-                                theme: theme,
-                                hintText: 'شماره کارت',
-                                inputFormatter: [_cardMask],
-                                textInputType: TextInputType.number,
-                                onChange: (value) {
-                                  _cardNumber =
-                                      value.charRagham(separator: " ").trim();
-                                  setState(() {});
-                                },
-                              ),
-                              BankTextField(
-                                theme: theme,
-                                hintText: 'شماره حساب',
-                                textInputType: TextInputType.number,
-                                onChange: (value) {
-                                  _accountNumber = value.trim();
-                                },
-                              ),
-                              BankTextField(
-                                theme: theme,
-                                hintText: 'شماره شبا',
-                                textInputType: TextInputType.number,
-                                onChange: (value) {
-                                  _iban = value.trim();
-                                },
-                              ),
-                              BankTextField(
-                                theme: theme,
-                                controller: _balancController,
-                                hintText: 'موجودی فعلی',
-                                textInputType: TextInputType.number,
-                                onChange: (value) {
-                                  _balancController.text =
-                                      value.seRagham().trim();
-                                  _balance = value.seRagham().trim();
-                                  var currentPos = TextSelection.fromPosition(
-                                      TextPosition(
-                                          offset:
-                                              _balancController.text.length));
-                                  _balancController.selection = currentPos;
-                                  setState(() {});
-                                },
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: BankTextField(
-                                      theme: theme,
-                                      textAlign: TextAlign.center,
-                                      hintText: '1401/03/29',
-                                      textInputType: TextInputType.number,
-                                      onChange: (value) {
-                                        _date = value.trim();
-                                      },
-                                    ),
+                          child: GetBuilder<FormValidators>(
+                              init: FormValidators(),
+                              builder: (validator) {
+                                return Form(
+                                  key: _formKey,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  child: Column(
+                                    children: [
+                                      BankTextField(
+                                        theme: theme,
+                                        hintText: 'شماره کارت',
+                                        inputFormatter: [_cardMask],
+                                        textInputType: TextInputType.number,
+                                        onChange: (value) {
+                                          _cardNumber = value
+                                              .charRagham(separator: " ")
+                                              .trim();
+                                          changeFocus(
+                                            focusNode: _accountNumberFocus,
+                                            firstLength: _cardNumber!.length,
+                                            secondLength: 19,
+                                          );
+                                          setState(() {});
+                                        },
+                                        validator: (_) =>
+                                            validator.cardNumberValidation(
+                                                _cardNumber ?? ""),
+                                      ),
+                                      BankTextField(
+                                        theme: theme,
+                                        focusNode: _accountNumberFocus,
+                                        hintText: 'شماره حساب',
+                                        textInputType: TextInputType.number,
+                                        onChange: (value) {
+                                          _accountNumber = value.trim();
+                                        },
+                                        validator: (_) =>
+                                            validator.empityValidation(
+                                                _accountNumber ?? '',
+                                                input: 'شماره حساب'),
+                                      ),
+                                      BankTextField(
+                                        theme: theme,
+                                        hintText: 'شماره شبا',
+                                        suffixText: 'IR',
+                                        textInputType: TextInputType.number,
+                                        onChange: (value) {
+                                          _iban = value.trim();
+                                          changeFocus(
+                                            focusNode: _balanceFocus,
+                                            firstLength: _iban!.length,
+                                            secondLength: 24,
+                                          );
+                                        },
+                                        validator: (_) => validator
+                                            .cardIbanValidation(_iban ?? ''),
+                                      ),
+                                      BankTextField(
+                                        theme: theme,
+                                        focusNode: _balanceFocus,
+                                        controller: _balancController,
+                                        hintText: 'موجودی فعلی',
+                                        textInputType: TextInputType.number,
+                                        onChange: (value) {
+                                          _balancController.text =
+                                              value.seRagham().trim();
+                                          _balance = value.seRagham().trim();
+                                          var currentPos =
+                                              TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: _balancController
+                                                          .text.length));
+                                          _balancController.selection =
+                                              currentPos;
+                                          validator
+                                              .empityValidation(_balance ?? '');
+                                          setState(() {});
+                                        },
+                                        validator: (_) => validator
+                                            .empityValidation(_balance ?? ''),
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: BankTextField(
+                                              theme: theme,
+                                              textAlign: TextAlign.center,
+                                              hintText: '03/29',
+                                              textInputType:
+                                                  TextInputType.number,
+                                              onChange: (value) {
+                                                _date = value.trim();
+                                              },
+                                              validator: (_) =>
+                                                  validator.cardDateValidation(
+                                                      _date ?? ''),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 34),
+                                          Expanded(
+                                            child: BankTextField(
+                                              theme: theme,
+                                              textAlign: TextAlign.center,
+                                              hintText: 'CVV2',
+                                              textInputType:
+                                                  TextInputType.number,
+                                              onChange: (value) {
+                                                _cvv2 = value.trim();
+                                              },
+                                              validator: (_) =>
+                                                  validator.empityValidation(
+                                                      _cvv2 ?? ''),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 34),
-                                  Expanded(
-                                    child: BankTextField(
-                                      theme: theme,
-                                      textAlign: TextAlign.center,
-                                      hintText: 'CVV2',
-                                      textInputType: TextInputType.number,
-                                      onChange: (value) {
-                                        _cvv2 = value.trim();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                );
+                              }),
                         ),
                       )),
                     ),
                   ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      width: 350,
-                      height: 200,
-                      margin: const EdgeInsets.symmetric(horizontal: 24),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 24),
-                      decoration: BoxDecoration(
-                          color: theme.colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(32),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey[900]!,
-                              blurRadius: 8,
-                              spreadRadius: 0,
-                              offset: const Offset(-0, 4),
-                            )
-                          ]),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            _balance ?? '',
-                            style: theme.textTheme.subtitle1!
-                                .copyWith(letterSpacing: 1.2),
-                          ),
-                          const SizedBox(height: 60),
-                          Text(
-                            _cardNumber ?? '',
-                            style: theme.textTheme.subtitle2,
-                            textDirection: TextDirection.ltr,
-                          ),
-                          const SizedBox(height: 24),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _cvv2 ?? '',
-                                style: theme.textTheme.bodyText2,
-                                textDirection: TextDirection.ltr,
-                              ),
-                              Text(
-                                _date ?? '',
-                                style: theme.textTheme.bodyText2,
-                                textDirection: TextDirection.ltr,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  TopCard(
+                    theme: theme,
+                    balance: _balance,
+                    cardNumber: _cardNumber,
+                    cvv2: _cvv2,
+                    date: _date,
                   ),
                 ],
               ),
@@ -201,14 +207,16 @@ class _CardAddScreenState extends State<CardAddScreen> {
           floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
               ? RegisterButton(
                   onPress: () {
-                    Get.find<CardController>().addCard(
-                      cardNumber: _cardNumber!,
-                      accountNumber: _accountNumber!,
-                      iban: _iban!,
-                      balance: _balance!,
-                      cvv2: _cvv2!,
-                      date: _date!,
-                    );
+                    if (_formKey.currentState!.validate()) {
+                      Get.find<CardController>().addCard(
+                        cardNumber: _cardNumber!,
+                        accountNumber: _accountNumber!,
+                        iban: _iban!,
+                        balance: _balance!,
+                        cvv2: _cvv2!,
+                        date: _date!,
+                      );
+                    }
                   },
                   lable: 'ثبت',
                   theme: theme,
@@ -219,5 +227,14 @@ class _CardAddScreenState extends State<CardAddScreen> {
         ),
       ),
     );
+  }
+
+  void changeFocus(
+      {required FocusNode focusNode,
+      required int firstLength,
+      required int secondLength}) {
+    if (firstLength == secondLength) {
+      focusNode.requestFocus();
+    }
   }
 }

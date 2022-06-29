@@ -23,9 +23,13 @@ class AppTheme {
         bodyText2: basicStyle.copyWith(
           fontSize: 16,
         ),
+        overline: basicStyle.copyWith(
+          fontSize: 14,
+        ),
       ),
       backgroundColor: const Color(0xFF08111A),
       primaryColor: const Color(0xFFA34FE4),
+      errorColor: const Color(0xFFa12803),
       colorScheme: const ColorScheme.light(
         secondary: Color(0xFF303B46),
       ),

@@ -1,7 +1,7 @@
 import 'package:bank_statements/src/presentations/components/register_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/app_key.dart';
+import '../../../core/app_keys.dart';
 import 'widgets/animated_list_item.dart';
 
 class CardDetailScreen extends StatefulWidget {
