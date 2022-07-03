@@ -4,7 +4,8 @@ import 'package:bank_statements/src/data/model/bank_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../logic/ad_card_controller.dart';
+import '../../logic/card_controller.dart';
+import '../../logic/transaction_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -24,6 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => CardController());
+    Get.lazyPut(() => TransactionController());
+    Get.find<TransactionController>()
+        .getData(id: pageController!.initialPage + 1);
     final theme = Theme.of(context);
     return SafeArea(
       child: Directionality(
@@ -267,7 +271,7 @@ class HomeCardSliderItem extends StatelessWidget {
     return Center(
       child: GestureDetector(
         onTap: () {
-          AppRoute.appRoute.navigateTo(context, '/carddetail');
+          AppRoute.appRoute.navigateTo(context, '/carddetail/${index + 1}');
         },
         child: Container(
           width: 350,

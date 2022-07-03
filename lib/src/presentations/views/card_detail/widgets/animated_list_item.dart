@@ -21,7 +21,7 @@ class AnimatedListItem extends StatelessWidget {
       width: 400,
       height: 330,
       margin: const EdgeInsets.only(top: 14, bottom: 14),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary,
         borderRadius: BorderRadius.circular(32),

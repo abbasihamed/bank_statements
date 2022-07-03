@@ -1,5 +1,5 @@
 import 'package:bank_statements/src/config/app_routing.dart';
-import 'package:bank_statements/src/presentations/logic/ad_card_controller.dart';
+import 'package:bank_statements/src/presentations/logic/card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

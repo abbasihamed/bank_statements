@@ -1,4 +1,3 @@
-
 import 'package:bank_statements/src/presentations/views/card_add/card_add_screen.dart';
 import 'package:bank_statements/src/presentations/views/card_detail/card_detail_screen.dart';
 import 'package:bank_statements/src/presentations/views/home/home_screen.dart';
@@ -12,17 +11,18 @@ class AppRoute {
   });
 
   static Handler cardDetailPage = Handler(handlerFunc: (context, parameters) {
-    return const CardDetailScreen();
+    return CardDetailScreen(
+      id: parameters['id']![0],
+    );
   });
 
   static Handler cardAddPage = Handler(handlerFunc: (context, parameters) {
     return const CardAddScreen();
   });
 
-  
   static void defineRoute() {
     appRoute.define('/', handler: homePage);
-    appRoute.define('/carddetail', handler: cardDetailPage);
+    appRoute.define('/carddetail/:id', handler: cardDetailPage);
     appRoute.define('/cardadd', handler: cardAddPage);
   }
 }

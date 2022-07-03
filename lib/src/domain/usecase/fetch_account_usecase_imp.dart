@@ -8,6 +8,6 @@ class FetchAccountUseCaseImp implements FetchAccountUseCase {
 
   @override
   Future<List<AccountModels>> fetchAccountUseCase() async {
-    return await _accountRepo.getAllData();
+    return await _accountRepo.getAllCardData();
   }
 }

@@ -1,11 +1,14 @@
 import 'package:bank_statements/src/presentations/components/register_button.dart';
+import 'package:bank_statements/src/presentations/logic/transaction_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../core/app_keys.dart';
 import 'widgets/animated_list_item.dart';
 
 class CardDetailScreen extends StatefulWidget {
-  const CardDetailScreen({Key? key}) : super(key: key);
+  final String id;
+  const CardDetailScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   State<CardDetailScreen> createState() => _CardDetailScreenState();
@@ -43,6 +46,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    print(widget.id);
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return SafeArea(
@@ -138,7 +142,14 @@ class _CardDetailScreenState extends State<CardDetailScreen>
           ),
           floatingActionButton: tabController!.index == 0 &&
                   MediaQuery.of(context).viewInsets.bottom == 0
-              ? RegisterButton(lable: 'ثبت', theme: theme)
+              ? RegisterButton(
+                  lable: 'ثبت',
+                  theme: theme,
+                  onPress: () {
+                    Get.find<TransactionController>()
+                        .addTransaction(cardId: widget.id);
+                  },
+                )
               : null,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,

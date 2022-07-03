@@ -1,23 +1,31 @@
-import 'package:bank_statements/src/data/model/bank_account.dart';
+import 'dart:io';
+
+import 'package:bank_statements/src/data/local/transaction_database.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'bank_database.dart';
+import 'card_database.dart';
 
-class BankAccountDatabaseImp implements BankDatabase {
+class BankAccountDatabaseImp implements CardDatabase, TransactionDatabase {
   final String _dbName = 'bank_account';
   static Database? _database;
 
   Future<Database> get database async {
-    _database ??= await _initDatabase();
+    if (_database != null) return _database!;
+    // lazily instantiate the db the first time it is accessed
+    _database = await _initDatabase();
     return _database!;
   }
 
-  Future<Database> _initDatabase() async {
-    return openDatabase(
-      join(await getDatabasesPath(), _dbName),
-      onCreate: (db, version) {
-        db.execute('''
+  _initDatabase() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, _dbName);
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
+  }
+
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
                   CREATE TABLE account(
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     account_number TEXT NOT NULL,
@@ -28,20 +36,41 @@ class BankAccountDatabaseImp implements BankDatabase {
                     balance TEXT NOT NULL
                   )
               ''');
-      },
-      version: 1,
-    );
+    await db.execute('''
+            CREATE TABLE cardtransaction(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    transaction_balance TEXT NOT NULL,
+                    transaction_time TEXT NOT NULL,
+                    transaction_date TEXT NOT NULL,
+                    transaction_mode TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    account_id  INTEGER NOT NULL,
+                    FOREIGN KEY (account_id) REFERENCES account (id)
+                  )
+          ''');
   }
 
   @override
-  Future<int> insertData(Map<String, dynamic> data) async {
+  Future<int> insertCardData(Map<String, dynamic> data) async {
     final db = await database;
     return await db.insert('account', data);
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getAllData() async {
+  Future<List<Map<String, dynamic>>> getAllCardData() async {
     final db = await database;
     return await db.query('account');
+  }
+
+  @override
+  Future<int> insertTansactionData(Map<String, dynamic> data) async {
+    final db = await database;
+    return await db.insert('cardtransaction', data);
+  }
+
+  @override
+  Future getTransactionWithId(int id) async {
+    final db = await database;
+    print(await db.query('cardtransaction',where: 'account_id = ?',whereArgs: [id]));
   }
 }
