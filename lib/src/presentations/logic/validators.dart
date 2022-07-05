@@ -1,6 +1,9 @@
-import 'package:get/get.dart';
+class FormValidators {
+  static FormValidators validator = FormValidators();
+  // factory FormValidators() {
+  //   return FormValidators();
+  // }
 
-class FormValidators extends GetxController {
   empityValidation(String value, {String? input}) {
     if (value.isEmpty) {
       return '${input ?? ''} نمی تواند خالی باشد';

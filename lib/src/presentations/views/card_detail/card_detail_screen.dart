@@ -18,11 +18,12 @@ class _CardDetailScreenState extends State<CardDetailScreen>
     with SingleTickerProviderStateMixin {
   TabController? tabController;
 
-  final _items = ["Item 0"];
+  final List<Map<String, dynamic>> _items = [{}];
   void _addItem() {
-    _items.insert(0, "Item ${_items.length + 1}");
-    animKey.currentState!
-        .insertItem(0, duration: const Duration(milliseconds: 300));
+    _items.insert(_items.indexOf(_items.last) + 1, {});
+    animKey.currentState!.insertItem(_items.indexOf(_items.last),
+        duration: const Duration(milliseconds: 300));
+    setState(() {});
   }
 
   void _removeItem(int index, BuildContext context) {
@@ -36,6 +37,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
       );
     }, duration: const Duration(milliseconds: 300));
     _items.removeAt(index);
+    setState(() {});
   }
 
   @override
@@ -46,7 +48,6 @@ class _CardDetailScreenState extends State<CardDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return SafeArea(
@@ -99,7 +100,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                     const SizedBox(width: 42),
                     TextButton.icon(
                       onPressed: () {
-                        _removeItem(0, context);
+                        _removeItem(_items.indexOf(_items.last), context);
                       },
                       icon: Icon(
                         Icons.close,
@@ -121,16 +122,24 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                     child: TabBarView(
                       controller: tabController,
                       children: [
-                        AnimatedList(
-                          key: animKey,
-                          initialItemCount: _items.length,
-                          itemBuilder: (context, index, animation) {
-                            return SizeTransition(
-                              sizeFactor: animation,
-                              child:
-                                  AnimatedListItem(theme: theme, index: index),
-                            );
-                          },
+                        Form(
+                          key: formKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          child: AnimatedList(
+                            key: animKey,
+                            initialItemCount: _items.length,
+                            itemBuilder: (context, index, animation) {
+                              return SizeTransition(
+                                sizeFactor: animation,
+                                child: AnimatedListItem(
+                                  theme: theme,
+                                  index: index,
+                                  itemList: _items,
+                                  onChange: (value) {},
+                                ),
+                              );
+                            },
+                          ),
                         ),
                         Container(),
                       ],
@@ -146,8 +155,12 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                   lable: 'ثبت',
                   theme: theme,
                   onPress: () {
-                    Get.find<TransactionController>()
-                        .addTransaction(cardId: widget.id);
+                    if (formKey.currentState!.validate()) {
+                      Get.find<TransactionController>().addTransaction(
+                        cardId: widget.id,
+                        value: _items,
+                      );
+                    }
                   },
                 )
               : null,

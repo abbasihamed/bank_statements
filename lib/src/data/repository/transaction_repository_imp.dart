@@ -9,11 +9,12 @@ class TransactionRepositoryImp implements TransactionRepository {
   @override
   Future<int> createTransaction(Transaction transaction) async {
     return await _database
-        .insertTansactionData(TrnasactionMapper.toMap(transaction));
+        .insertTansactionData(TransactionMapper.toMap(transaction));
   }
 
   @override
-  Future getTransactionWithId(int id) async {
-    await _database.getTransactionWithId(id);
+  Future<List<Transaction>> getTransactionWithId(int id) async {
+    final data = await _database.getTransactionWithId(id);
+    return TransactionMapper.toList(data);
   }
 }

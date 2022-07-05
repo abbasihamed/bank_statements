@@ -12,7 +12,7 @@ class CardController extends GetxController {
 
   bool isError = false;
 
-  final List<AccountModels> _cardList = [];
+  List<AccountModels> _cardList = [];
 
   List<AccountModels> get cardList => _cardList;
 
@@ -28,11 +28,11 @@ class CardController extends GetxController {
       final response = await accountUseCase.createExecute(
         AccountModels(
           accountNumber: accountNumber,
-          cardNumber: cardNumber,
+          cardNumber: cardNumber.replaceAll(' ', ''),
           ibanNumber: iban,
           cvv2: cvv2,
           cardDate: date,
-          balance: balance,
+          balance: balance.replaceAll(',', ''),
         ),
       );
       navKey.currentState!.pop();
@@ -43,11 +43,8 @@ class CardController extends GetxController {
   }
 
   getAllCard() async {
-    final value = await fetchCards.fetchAccountUseCase();
-    _cardList.clear();
-    for (var element in value) {
-      _cardList.add(element);
-    }
+    final response = await fetchCards.fetchAccountUseCase();
+    _cardList = response;
     update();
   }
 

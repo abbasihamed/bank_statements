@@ -1,6 +1,7 @@
 class Transaction {
   final int? id;
   final int? cardId;
+  final String? transactionCard;
   final String? transactionDate;
   final String? transactionTime;
   final String? transactionBalance;
@@ -10,6 +11,7 @@ class Transaction {
   const Transaction({
     this.id,
     this.cardId,
+    this.transactionCard,
     this.transactionDate,
     this.transactionTime,
     this.transactionBalance,

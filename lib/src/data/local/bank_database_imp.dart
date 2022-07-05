@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bank_statements/src/data/local/transaction_database.dart';
+import 'package:bank_statements/src/data/model/transaction.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -39,6 +40,7 @@ class BankAccountDatabaseImp implements CardDatabase, TransactionDatabase {
     await db.execute('''
             CREATE TABLE cardtransaction(
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    transaction_card TEXT NOT NULL,
                     transaction_balance TEXT NOT NULL,
                     transaction_time TEXT NOT NULL,
                     transaction_date TEXT NOT NULL,
@@ -69,8 +71,9 @@ class BankAccountDatabaseImp implements CardDatabase, TransactionDatabase {
   }
 
   @override
-  Future getTransactionWithId(int id) async {
+  Future<List<Map<String, dynamic>>> getTransactionWithId(int id) async {
     final db = await database;
-    print(await db.query('cardtransaction',where: 'account_id = ?',whereArgs: [id]));
+    return await db
+        .query('cardtransaction', where: 'account_id = ?', whereArgs: [id]);
   }
 }

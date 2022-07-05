@@ -42,7 +42,6 @@ class BankTextField extends StatelessWidget {
         child: Center(
           child: TextFormField(
             validator: validator,
-            
             controller: controller,
             onChanged: onChange,
             focusNode: focusNode,
@@ -59,7 +58,8 @@ class BankTextField extends StatelessWidget {
                   theme.textTheme.bodyText2!.copyWith(color: Colors.grey),
               suffixText: suffixText,
               suffixStyle: theme.textTheme.bodyText2,
-              errorStyle: theme.textTheme.overline!.copyWith(color: theme.errorColor),
+              errorStyle:
+                  theme.textTheme.overline!.copyWith(color: theme.errorColor),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: theme.primaryColor),

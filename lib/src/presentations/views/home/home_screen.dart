@@ -59,7 +59,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             reverse: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: cardController.cardList.length + 1,
-                            onPageChanged: (index) {},
+                            onPageChanged: (index) {
+                              Get.find<TransactionController>()
+                                  .getData(id: index + 1);
+                            },
                             itemBuilder: (context, index) {
                               return index < cardController.cardList.length
                                   ? HomeCardSliderItem(
@@ -187,63 +190,77 @@ class HomeBottomSheet extends StatelessWidget {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 34),
-                    child: ListView.separated(
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '+ 30,000,000',
-                                      style: theme.textTheme.bodyText2,
-                                      textDirection: TextDirection.ltr,
-                                    ),
-                                    Text(
-                                      '10:05',
-                                      style: theme.textTheme.bodyText2,
-                                      textDirection: TextDirection.ltr,
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  '6037 9919 2194 4646',
-                                  style: theme.textTheme.bodyText2,
-                                  textDirection: TextDirection.ltr,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere ligula augue, quis porta mi facilisis non. Sed consequat maximus velit non ornare. Etiam eu urna et nunc convallis rhoncus',
-                              style: theme.textTheme.bodyText2,
-                              overflow: TextOverflow.fade,
-                            ),
-                            const SizedBox(height: 5),
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon:
-                                  Icon(Icons.close, color: theme.primaryColor),
-                              label: Text(
-                                'حذف',
-                                style: theme.textTheme.subtitle2,
+                    child: GetBuilder<TransactionController>(
+                        builder: (transaction) {
+                      return ListView.separated(
+                        itemCount: transaction.transactionList.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '+ ${transaction.transactionList[index].transactionBalance}',
+                                        style: theme.textTheme.bodyText2,
+                                        textDirection: TextDirection.ltr,
+                                      ),
+                                      Text(
+                                        transaction.transactionList[index]
+                                            .transactionTime!,
+                                        style: theme.textTheme.bodyText2,
+                                        textDirection: TextDirection.ltr,
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    '6037 9919 2194 4646',
+                                    style: theme.textTheme.bodyText2,
+                                    textDirection: TextDirection.ltr,
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return Divider(
-                          thickness: 1,
-                          color: theme.primaryColor,
-                        );
-                      },
-                    ),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 120,
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    transaction
+                                        .transactionList[index].description!,
+                                    style: theme.textTheme.bodyText2,
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              TextButton.icon(
+                                onPressed: () {},
+                                icon: Icon(Icons.close,
+                                    color: theme.primaryColor),
+                                label: Text(
+                                  'حذف',
+                                  style: theme.textTheme.subtitle2,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Divider(
+                            thickness: 1,
+                            color: theme.primaryColor,
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ),
               ],
