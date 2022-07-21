@@ -30,6 +30,8 @@ class _AnimatedListItemState extends State<AnimatedListItem> {
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  String val = 'in';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,6 +45,34 @@ class _AnimatedListItemState extends State<AnimatedListItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                BankRadioButton(
+                  theme: widget.theme,
+                  title: 'واریز',
+                  value: 'in',
+                  groupValue: val,
+                  onChanged: (value) {
+                    setState(() {});
+                    val = value!;
+                  },
+                ),
+                BankRadioButton(
+                  theme: widget.theme,
+                  title: 'برداشت',
+                  value: 'out',
+                  groupValue: val,
+                  onChanged: (value) {
+                    setState(() {});
+                    val = value!;
+                  },
+                ),
+              ],
+            ),
+          ),
           BankTextField(
             controller: cardNumberController,
             padding: const EdgeInsets.only(top: 10),
@@ -60,8 +90,7 @@ class _AnimatedListItemState extends State<AnimatedListItem> {
             theme: widget.theme,
             hintText: 'مبلغ',
             onChange: (value) {
-              balanceController.text =
-                                        value.seRagham().trim();
+              balanceController.text = value.seRagham().trim();
               var currentPos = TextSelection.fromPosition(
                   TextPosition(offset: balanceController.text.length));
               balanceController.selection = currentPos;
@@ -130,8 +159,43 @@ class _AnimatedListItemState extends State<AnimatedListItem> {
       'transactionBalance': balanceController.text.trim(),
       'transactionTime': timeController.text.trim(),
       'transactionDate': dateController.text.trim(),
-      'transactionMode': 'in',
+      'transactionMode': val,
     };
     widget.onChange!(widget.itemList);
+  }
+}
+
+class BankRadioButton<T> extends StatelessWidget {
+  const BankRadioButton({
+    Key? key,
+    required this.theme,
+    required this.title,
+    required this.onChanged,
+    required this.value,
+    required this.groupValue,
+  }) : super(key: key);
+
+  final ThemeData theme;
+  final String title;
+  final String value;
+  final String groupValue;
+  final ValueChanged<String?>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Radio(
+          value: value,
+          groupValue: groupValue,
+          onChanged: onChanged,
+          activeColor: theme.primaryColor,
+        ),
+        Text(
+          title,
+          style: theme.textTheme.bodyText1,
+        )
+      ],
+    );
   }
 }

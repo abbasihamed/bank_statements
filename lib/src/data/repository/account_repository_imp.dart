@@ -17,4 +17,9 @@ class AccountRepoImp implements AccountRepo {
     final data = await _bankDatabase.getAllCardData();
     return CardListMapper.toList(data);
   }
+
+  @override
+  Future<void> updateBalance(AccountModels accountModels) async {
+    await _bankDatabase.updateBalance(accountModels.toMap(accountModels));
+  }
 }

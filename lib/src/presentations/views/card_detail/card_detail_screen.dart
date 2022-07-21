@@ -1,4 +1,5 @@
 import 'package:bank_statements/src/presentations/components/register_button.dart';
+import 'package:bank_statements/src/presentations/logic/balance_controller.dart';
 import 'package:bank_statements/src/presentations/logic/transaction_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

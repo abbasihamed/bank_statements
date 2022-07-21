@@ -76,4 +76,10 @@ class BankAccountDatabaseImp implements CardDatabase, TransactionDatabase {
     return await db
         .query('cardtransaction', where: 'account_id = ?', whereArgs: [id]);
   }
+
+  @override
+  Future<void> updateBalance(Map<String, dynamic> data) async {
+    final db = await database;
+    await db.update('account', data, where: 'id = ?', whereArgs: [data['id']]);
+  }
 }
