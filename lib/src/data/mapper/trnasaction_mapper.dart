@@ -22,6 +22,7 @@ class TransactionMapper {
         transactionDate: e['transaction_date'],
         transactionMode: e['transaction_mode'],
         transactionTime: e['transaction_time'],
+        transactionCard: e['transaction_card']
       );
     }).toList();
     return value;
