@@ -71,10 +71,12 @@ class BankAccountDatabaseImp implements CardDatabase, TransactionDatabase {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getTransactionWithId(int id) async {
+  Future<List<Map<String, dynamic>>> getTransactionWithId(
+      int id, String date) async {
     final db = await database;
-    return await db
-        .query('cardtransaction', where: 'account_id = ?', whereArgs: [id]);
+    return await db.query('cardtransaction',
+        where: 'account_id = ? AND transaction_date = ?',
+        whereArgs: [id, date]);
   }
 
   @override

@@ -13,8 +13,8 @@ class TransactionRepositoryImp implements TransactionRepository {
   }
 
   @override
-  Future<List<Transaction>> getTransactionWithId(int id) async {
-    final data = await _database.getTransactionWithId(id);
+  Future<List<Transaction>> getTransactionWithId(int id,String date) async {
+    final data = await _database.getTransactionWithId(id,date);
     return TransactionMapper.toList(data);
   }
 }

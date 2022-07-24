@@ -4,9 +4,11 @@ import 'package:bank_statements/src/data/model/bank_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constants.dart';
 import '../../logic/balance_controller.dart';
 import '../../logic/card_controller.dart';
 import '../../logic/transaction_controller.dart';
+import 'widgets/card_slider_item.dart';
 import 'widgets/home_bottom_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,13 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
     pageController = PageController(viewportFraction: 0.9);
   }
 
+ 
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => CardController());
     Get.lazyPut(() => TransactionController());
     Get.lazyPut(() => BalanceController());
     Get.find<TransactionController>()
-        .getData(id: pageController!.initialPage + 1);
+        .getData(id: pageController!.initialPage + 1, date: current);
     final theme = Theme.of(context);
     return SafeArea(
       child: Directionality(
@@ -64,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: cardController.cardList.length + 1,
                             onPageChanged: (index) {
                               Get.find<TransactionController>()
-                                  .getData(id: index + 1);
+                                  .getData(id: index + 1, date: current);
                             },
                             itemBuilder: (context, index) {
                               return index < cardController.cardList.length
@@ -119,77 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           bottomSheet: HomeBottomSheet(theme: theme),
-        ),
-      ),
-    );
-  }
-}
-
-class HomeCardSliderItem extends StatelessWidget {
-  final ThemeData theme;
-  final List<AccountModels> cardList;
-  final int index;
-  const HomeCardSliderItem({
-    Key? key,
-    required this.theme,
-    required this.cardList,
-    required this.index,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          Get.find<BalanceController>().cacheCardData(cardList[index]);
-          AppRoute.appRoute.navigateTo(context, '/carddetail/${index + 1}');
-        },
-        child: Container(
-          width: 350,
-          height: 200,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.secondary,
-            borderRadius: BorderRadius.circular(32),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                cardList[index].balance ?? '',
-                style: theme.textTheme.subtitle1!.copyWith(letterSpacing: 1.2),
-              ),
-              const SizedBox(height: 60),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.copy, color: theme.primaryColor, size: 18),
-                  const SizedBox(width: 10),
-                  Text(
-                    cardList[index].cardNumber ?? '',
-                    style: theme.textTheme.subtitle2,
-                    textDirection: TextDirection.ltr,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    cardList[index].cvv2 ?? '',
-                    style: theme.textTheme.bodyText2,
-                    textDirection: TextDirection.ltr,
-                  ),
-                  Text(
-                    cardList[index].cardDate ?? '',
-                    style: theme.textTheme.bodyText2,
-                    textDirection: TextDirection.ltr,
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
       ),
     );

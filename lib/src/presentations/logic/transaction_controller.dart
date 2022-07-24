@@ -1,5 +1,6 @@
 import 'package:bank_statements/injector.dart';
 import 'package:bank_statements/src/core/app_keys.dart';
+import 'package:bank_statements/src/core/constants.dart';
 import 'package:bank_statements/src/data/model/transaction.dart';
 import 'package:bank_statements/src/domain/usecase/transaction_usecase.dart';
 import 'package:bank_statements/src/presentations/logic/balance_controller.dart';
@@ -43,12 +44,12 @@ class TransactionController extends GetxController {
     }
     Get.find<BalanceController>().setBalance(id: int.parse(cardId));
     Get.find<CardController>().getAllCard();
-    getData(id: int.parse(cardId));
+    getData(id: int.parse(cardId), date: current);
     navKey.currentState!.pop();
   }
 
-  void getData({required int id}) async {
-    final response = await trasactionUsecase.getWithIdExecute(id);
+  void getData({required int id, required String date}) async {
+    final response = await trasactionUsecase.getWithIdExecute(id, date);
     _transactionList = response;
     calculateTransAction(transaction: _transactionList);
     update();

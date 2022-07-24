@@ -54,6 +54,7 @@ class HomeBottomSheet extends StatelessWidget {
                             style: theme.textTheme.bodyText1,
                           ),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 '+ ${transaction.totalIn}',
