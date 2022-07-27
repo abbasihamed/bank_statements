@@ -1,10 +1,10 @@
 import 'package:bank_statements/injector.dart';
 import 'package:bank_statements/src/data/model/bank_account.dart';
-import 'package:bank_statements/src/domain/usecase/update_balance_usecase.dart';
+import 'package:bank_statements/src/domain/usecase/card_usecase.dart';
 import 'package:get/get.dart';
 
 class BalanceController extends GetxController {
-  final updateBalance = injection.get<UpdateBalanceUseCase>();
+  final updateBalance = injection.get<CardUseCase>();
   AccountModels? _accountModels;
   int _in = 0;
   int _out = 0;

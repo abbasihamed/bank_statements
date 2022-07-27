@@ -1,14 +1,12 @@
 import 'package:bank_statements/injector.dart';
 import 'package:bank_statements/src/data/model/bank_account.dart';
-import 'package:bank_statements/src/domain/usecase/create_account_usecase.dart';
-import 'package:bank_statements/src/domain/usecase/fetch_acount_usecase.dart';
+import 'package:bank_statements/src/domain/usecase/card_usecase.dart';
 import 'package:get/get.dart';
 
 import '../../core/app_keys.dart';
 
 class CardController extends GetxController {
-  final accountUseCase = injection.get<CreateAccountUseCase>();
-  final fetchCards = injection.get<FetchAccountUseCase>();
+  final cardUseCase = injection.get<CardUseCase>();
 
   bool isError = false;
 
@@ -25,7 +23,7 @@ class CardController extends GetxController {
     required String date,
   }) async {
     try {
-      final response = await accountUseCase.createExecute(
+      final response = await cardUseCase.createExecute(
         AccountModels(
           accountNumber: accountNumber,
           cardNumber: cardNumber.replaceAll(' ', ''),
@@ -43,7 +41,7 @@ class CardController extends GetxController {
   }
 
   getAllCard() async {
-    final response = await fetchCards.fetchAccountUseCase();
+    final response = await cardUseCase.fetchAccountUseCase();
     _cardList = response;
     update();
   }
