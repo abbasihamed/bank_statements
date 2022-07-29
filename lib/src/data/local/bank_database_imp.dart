@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:bank_statements/src/data/local/transaction_database.dart';
-import 'package:bank_statements/src/data/model/transaction.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -71,17 +70,24 @@ class BankAccountDatabaseImp implements CardDatabase, TransactionDatabase {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getTransactionWithId(
-      int id, String date) async {
+  Future<List<Map<String, dynamic>>> getTransactionWithDate(
+      int id, String fromDate, String toDate) async {
     final db = await database;
-    return await db.query('cardtransaction',
-        where: 'account_id = ? AND transaction_date = ?',
-        whereArgs: [id, date]);
+
+    return await db.rawQuery(
+        "SELECT * FROM cardtransaction where account_id == $id AND (transaction_date >= '$fromDate' AND transaction_date <= '$toDate') ");
   }
 
   @override
   Future<void> updateBalance(Map<String, dynamic> data) async {
     final db = await database;
     await db.update('account', data, where: 'id = ?', whereArgs: [data['id']]);
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getAllTransactionWithId(int id) async {
+    final db = await database;
+    return await db
+        .query('cardtransaction', where: 'account_id = ? ', whereArgs: [id]);
   }
 }

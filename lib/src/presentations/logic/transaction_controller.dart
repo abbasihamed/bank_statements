@@ -14,8 +14,10 @@ class TransactionController extends GetxController {
   int _totalIn = 0;
   int _totalOut = 0;
 
+  List<Transaction> _transactionTodayList = [];
   List<Transaction> _transactionList = [];
 
+  List<Transaction> get transactionTodayList => _transactionTodayList;
   List<Transaction> get transactionList => _transactionList;
   String get totalIn => _totalIn.toString().seRagham();
   String get totalOut => _totalOut.toString().seRagham();
@@ -48,10 +50,21 @@ class TransactionController extends GetxController {
     navKey.currentState!.pop();
   }
 
+  void getDataWithCondition() async {
+    final response = await trasactionUsecase.getWithDateExecute(1, '', '');
+    for (var element in response) {
+      print(element.transactionDate);
+    }
+  }
+
   void getData({required int id, required String date}) async {
-    final response = await trasactionUsecase.getWithIdExecute(id, date);
-    _transactionList = response;
-    calculateTransAction(transaction: _transactionList);
+    final response = await trasactionUsecase.getWithIdExecute(id);
+    for (var element in response) {
+      if (element.transactionDate == current) {
+        _transactionTodayList = response;
+      }
+    }
+    calculateTransAction(transaction: _transactionTodayList);
     update();
   }
 

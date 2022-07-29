@@ -76,7 +76,7 @@ class HomeBottomSheet extends StatelessWidget {
                       child: Padding(
                           padding: const EdgeInsets.only(top: 34),
                           child: ListView.separated(
-                            itemCount: transaction.transactionList.length,
+                            itemCount: transaction.transactionTodayList.length,
                             itemBuilder: (context, index) {
                               return Column(
                                 children: [
@@ -92,16 +92,19 @@ class HomeBottomSheet extends StatelessWidget {
                                         children: [
                                           Text(
                                             transaction.detecMode(
-                                              transaction.transactionList[index]
+                                              transaction
+                                                  .transactionTodayList[index]
                                                   .transactionBalance!,
-                                              transaction.transactionList[index]
+                                              transaction
+                                                  .transactionTodayList[index]
                                                   .transactionMode!,
                                             ),
                                             style: theme.textTheme.bodyText2,
                                             textDirection: TextDirection.ltr,
                                           ),
                                           Text(
-                                            transaction.transactionList[index]
+                                            transaction
+                                                .transactionTodayList[index]
                                                 .transactionTime!,
                                             style: theme.textTheme.bodyText2,
                                             textDirection: TextDirection.ltr,
@@ -109,7 +112,7 @@ class HomeBottomSheet extends StatelessWidget {
                                         ],
                                       ),
                                       Text(
-                                        transaction.transactionList[index]
+                                        transaction.transactionTodayList[index]
                                                 .transactionCard ??
                                             '',
                                         style: theme.textTheme.bodyText2,
@@ -124,7 +127,7 @@ class HomeBottomSheet extends StatelessWidget {
                                     child: Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        transaction.transactionList[index]
+                                        transaction.transactionTodayList[index]
                                             .description!,
                                         style: theme.textTheme.bodyText2,
                                         overflow: TextOverflow.fade,

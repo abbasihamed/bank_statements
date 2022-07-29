@@ -23,7 +23,7 @@ class CardController extends GetxController {
     required String date,
   }) async {
     try {
-      final response = await cardUseCase.createExecute(
+    await cardUseCase.createExecute(
         AccountModels(
           accountNumber: accountNumber,
           cardNumber: cardNumber.replaceAll(' ', ''),

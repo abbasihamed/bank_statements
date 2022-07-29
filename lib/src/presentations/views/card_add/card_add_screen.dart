@@ -1,7 +1,5 @@
-import 'package:bank_statements/src/config/app_routing.dart';
 import 'package:bank_statements/src/presentations/logic/card_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';

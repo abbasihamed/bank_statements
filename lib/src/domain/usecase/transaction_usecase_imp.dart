@@ -11,7 +11,12 @@ class TransactionUsecaseImp implements TransactionUseCase {
   }
 
   @override
-  Future<List<Transaction>> getWithIdExecute(int id, String date) async {
-    return await _repository.getTransactionWithId(id,date);
+  Future<List<Transaction>> getWithIdExecute(int id) async {
+    return await _repository.getAllTransactionWithId(id);
+  }
+
+  @override
+  Future<List<Transaction>> getWithDateExecute(int id, String fromDate, String toDate) async {
+    return await _repository.getTransactionWithDate(id, fromDate, toDate);
   }
 }

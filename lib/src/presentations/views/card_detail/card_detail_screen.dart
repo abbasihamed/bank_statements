@@ -1,8 +1,6 @@
 import 'package:bank_statements/src/presentations/components/register_button.dart';
 import 'package:bank_statements/src/presentations/logic/transaction_controller.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import 'package:get/get.dart';
 
@@ -27,7 +25,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 1, vsync: this);
   }
 
   @override
@@ -63,7 +61,7 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                 indicatorPadding: const EdgeInsets.symmetric(horizontal: 15),
                 tabs: const [
                   Text('تراکنش'),
-                  Text('تاریخچه'),
+                  // Text('تاریخچه'),
                 ],
               ),
               tabController!.index == 0
@@ -131,9 +129,9 @@ class _CardDetailScreenState extends State<CardDetailScreen>
                             ),
                           ),
                         ),
-                        TransactionHistory(
-                          theme: theme,
-                        ),
+                        // TransactionHistory(
+                        //   theme: theme,
+                        // ),
                       ],
                     ),
                   ),

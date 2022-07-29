@@ -1,6 +1,4 @@
-import 'package:bank_statements/src/config/app_routing.dart';
 import 'package:bank_statements/src/core/app_keys.dart';
-import 'package:bank_statements/src/data/model/bank_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

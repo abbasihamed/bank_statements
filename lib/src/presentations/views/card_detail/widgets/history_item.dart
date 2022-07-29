@@ -42,7 +42,7 @@ class TransactionHistoryItem extends StatelessWidget {
                     textDirection: TextDirection.ltr,
                   ),
                   Text(
-                    transaction.transactionList[index].transactionTime!,
+                    '${transaction.transactionList[index].transactionDate} - ${transaction.transactionList[index].transactionTime}',
                     style: theme.textTheme.bodyText2,
                     textDirection: TextDirection.ltr,
                   ),

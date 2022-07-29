@@ -139,7 +139,7 @@ class _AnimatedListItemState extends State<AnimatedListItem>
                         padding: const EdgeInsets.only(top: 10),
                         theme: widget.theme,
                         textAlign: TextAlign.center,
-                        hintText: '1401/03/09',
+                        hintText: '1401/3/9',
                         onChange: (value) {
                           returnData();
                         },
